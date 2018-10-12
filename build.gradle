@@ -1,0 +1,49 @@
+buildscript {
+    ext {
+        jayBirdVersion = '3.0.5'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'ru.velkomfood.it.services.time.control'
+version '1.1'
+mainClassName = group + '.StartUI'
+
+sourceCompatibility = 1.10
+targetCompatibility = 1.10
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.firebirdsql.jdbc:jaybird-jdk18:$jayBirdVersion"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// For the including of resources
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/java", "src/main/resources"]
+            includes = ["**/*.fxml", "**/*.css"]
+        }
+    }
+}
+
+jar {
+    baseName = project.name
+    version = project.version
+    manifest {
+        attributes(
+                'Implementation-Version': version,
+                'JavaFX-Version': 10,
+                'Main-Class': mainClassName
+        )
+    }
+    from configurations.compile.collect() { it.isDirectory() ? it : zipTree(it) }
+}
